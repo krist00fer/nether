@@ -5,6 +5,18 @@ namespace Nether.Analytics.EventProcessor.Host
 
     /*
 
+Each package is licensed to you by its owner. NuGet is not responsible for, nor does it grant any licenses to, third-party packages. Some packages may include dependencies which are governed by additional licenses. Follow the package source (feed) URL to determine any dependencies.
+
+Package Manager Console Host Version 4.1.0.2427
+
+Type 'get-help NuGet' to see all available NuGet commands.
+
+PM> install-Package Nether.Analytics
+
+......
+
+
+   
                        +-------------------+
                        | Game Client       |
                        +---------+---------+
@@ -118,10 +130,10 @@ namespace Nether.Analytics.EventProcessor.Host
             // Notice that the location event is handled by a custom event handler that wouldn't be included by default in any Nether packages.
             // PassThroughGameEventHandler can be used to pass events directly through to the output manager(s) without doing any enrichment of the event
             netherEventRouter.GameEventHandlers.Clear();
-            netherEventRouter.GameEventHandlers.Add("sessionstart|1.0",)
+            netherEventRouter.GameEventHandlers.Add("sessionstart|1.0", new PassThroughGameEventHandler(blobOutputManager));
             netherEventRouter.GameEventHandlers.Add("heartbeat|1.0", new PassThroughGameEventHandler(eventHubOutputManager));
-            netherEventRouter.GameEventHandlers.Add("location|1.0", new GoogleLocation_1_0_GameEventHandler(eventHubOutputManager, blobOutputManager));
-            netherEventRouter.UnknownGameEventHandler = new PassThroughtGameEventHandler(unknownEventsOutputManager);
+            netherEventRouter.GameEventHandlers.Add("location|1.0", new Location_1_0_Google_GameEventHandler(eventHubOutputManager, blobOutputManager));
+            netherEventRouter.UnknownGameEventHandler = new PassThroughGameEventHandler(unknownEventsOutputManager);
 
             gameEventProcessor.GameEventRouter = netherEventRouter;
 
