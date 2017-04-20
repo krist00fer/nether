@@ -71,20 +71,30 @@ namespace Nether.Analytics.EventProcessor.Host
 
     internal class EventPipeline
     {
-        private GameEventHandler[] gameEventHandler;
+        private GameEventHandler[] gameEventHandlers;
         private OutputManager[] outputManagers;
 
-        public EventPipeline(string messageType, GameEventHandler[] gameEventHandler, OutputManager[] outputManagers)
+        public EventPipeline(string messageType, GameEventHandler[] gameEventHandlers, OutputManager[] outputManagers)
         {
             MessageType = messageType;
-            this.gameEventHandler = gameEventHandler;
+            this.gameEventHandlers = gameEventHandlers;
             this.outputManagers = outputManagers;
         }
 
         internal void ProcessMessage(GameMessage msg)
         {
-
-            throw new NotImplementedException();
+            foreach (var handler in gameEventHandlers)
+            {
+                var result = handler.ProcessMessage(msg);
+                if (result.StopProcessing)
+                {
+                    return;
+                }
+            }
+            foreach (var outputManager in outputManagers)
+            {
+                outputManager.OutputMessage(msg);
+            }
         }
 
         public string MessageType { get; private set; }
@@ -98,7 +108,7 @@ namespace Nether.Analytics.EventProcessor.Host
     internal class EventPipelineBuilder
     {
         private string eventName;
-        private List<GameEventHandler> handlers;
+        private List<GameEventHandler> handlers = new List<GameEventHandler>();
         private OutputManager[] outputManagers;
 
         public EventPipelineBuilder(string eventName)
@@ -124,7 +134,51 @@ namespace Nether.Analytics.EventProcessor.Host
         }
     }
 
-    internal class GameEventHandler
+    //GameEventHandler h1 = null, h2 = null, h3 = null;
+
+    //h2.ProcessMessage(msg, h3.ProcessMessage);
+    //h2.ProcessMessage(msg, (m,n) => h3.ProcessMessage(m, n));
+    //h1.ProcessMessage(msg, (m, n) => h2.ProcessMessage(m, n));
+
+
+
+
+    //MessageHandler nullHandler = (m, n) => { };
+    //Action<GameMessage> handler = message => h1.ProcessMessage(msg,
+    //    (m2,n2) => h2.ProcessMessage(m2,
+    //        (m, n) => h3.ProcessMessage(m, nullHandler)
+    //    )
+    //);
+
+    //public delegate void MessageHandler(GameMessage message, MessageHandler next);
+    //internal abstract class GameEventHandler
+    //{
+    //    //public abstract void ProcessMessage(GameMessage message, GameEventHandler next);
+    //    public abstract void ProcessMessage(GameMessage message, MessageHandler next);
+    //}
+
+    //internal abstract class GameEventHandler2
+    //{
+    //    private readonly GameEventHandler2 next;
+
+    //    public GameEventHandler2(GameEventHandler2 next)
+    //    {
+    //        this.next = next;
+    //    }
+    //    public abstract void ProcessMessage(GameMessage message);
+    //}
+
+
+    internal abstract class GameEventHandler
     {
+        public abstract GameHandlerResult ProcessMessage(GameMessage message);
     }
+
+    class GameHandlerResult
+    {
+        public bool StopProcessing { get; set; }
+    }
+
+
+
 }
