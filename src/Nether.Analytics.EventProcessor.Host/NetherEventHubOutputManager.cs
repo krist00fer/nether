@@ -1,6 +1,6 @@
 ﻿namespace Nether.Analytics.EventProcessor.Host
 {
-    internal class NetherEventHubOutputManager
+    internal class NetherEventHubOutputManager : OutputManager
     {
         private string outputEventHubConnectionString;
 
