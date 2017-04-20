@@ -1,6 +1,6 @@
 ﻿namespace Nether.Analytics.EventProcessor.Host
 {
-    internal class NetherBlobOutputManager
+    internal class NetherBlobOutputManager : OutputManager
     {
         private string outputblobStorageConnectionString;
 
