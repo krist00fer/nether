@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace Nether.Analytics.EventProcessor.Host
 {
-    internal class EventRoutingBuilder
+    internal class GameEventPipelineBuilder
     {
         private List<GameEventHandler> globalHandlers = new List<GameEventHandler>();
         private List<EventPipelineBuilder> eventPipelineBuilders = new List<EventPipelineBuilder>();
         EventPipelineBuilder unhandledEventBuilder;
 
-        public EventRoutingBuilder()
+        public GameEventPipelineBuilder()
         {
         }
 
@@ -22,7 +22,7 @@ namespace Nether.Analytics.EventProcessor.Host
             return builder;
         }
 
-        internal EventRoutingBuilder AddHandler(GameEventHandler eventHandler)
+        internal GameEventPipelineBuilder AddHandler(GameEventHandler eventHandler)
         {
             this.globalHandlers.Add(eventHandler);
 

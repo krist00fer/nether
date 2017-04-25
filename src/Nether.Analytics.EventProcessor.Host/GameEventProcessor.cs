@@ -8,9 +8,9 @@ namespace Nether.Analytics.EventProcessor.Host
         {
         }
 
-        public NetherEventHubListner GameEventListner { get; internal set; }
-        public NetherEventParser GameEventParser { get; internal set; }
-        public NetherEventRouter GameEventRouter { get; internal set; }
+        public NetherEventHubListner Listner { get; internal set; }
+        public NetherEventParser Parser { get; internal set; }
+        public NetherEventRouter Pipeline { get; internal set; }
 
         internal void ProcessAndBlock()
         {
