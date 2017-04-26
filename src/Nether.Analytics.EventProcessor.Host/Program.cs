@@ -1,8 +1,10 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
 
 namespace Nether.Analytics.EventProcessor.Host
 {
-
     /*
 
 Each package is licensed to you by its owner. NuGet is not responsible for, nor does it grant any licenses to, third-party packages. Some packages may include dependencies which are governed by additional licenses. Follow the package source (feed) URL to determine any dependencies.
@@ -82,9 +84,9 @@ PM> install-Package Nether.Analytics
     */
 
 
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var ingestEventHubConnectionString = "...";
             var outputblobStorageConnectionString = "...";
@@ -106,10 +108,6 @@ PM> install-Package Nether.Analytics
 
 
             GameEventRouter r = builder.Build();
-
-
-
-
 
             //Greet();
 

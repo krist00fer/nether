@@ -36,6 +36,5 @@ namespace Nether.Analytics
                 outputManager.OutputMessageAsync(msg);
             }
         }
-
     }
 }

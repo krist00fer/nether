@@ -60,7 +60,6 @@ namespace Nether.Analytics.EventProcessorHost
             Task.Run(async () =>
             {
                 await messageProcessor.ProcessAndBlockAsync();
-
             }).GetAwaiter().GetResult();
         }
 

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,9 +9,9 @@ namespace Nether.Analytics.EventProcessor.Host
 {
     internal class EventRoutingBuilder
     {
-        private List<GameEventHandler> globalHandlers = new List<GameEventHandler>();
-        private List<EventPipelineBuilder> eventPipelineBuilders = new List<EventPipelineBuilder>();
-        EventPipelineBuilder unhandledEventBuilder;
+        private List<GameEventHandler> _globalHandlers = new List<GameEventHandler>();
+        private List<EventPipelineBuilder> _eventPipelineBuilders = new List<EventPipelineBuilder>();
+        private EventPipelineBuilder _unhandledEventBuilder;
 
         public EventRoutingBuilder()
         {
@@ -17,29 +20,29 @@ namespace Nether.Analytics.EventProcessor.Host
         internal EventPipelineBuilder Event(string eventName)
         {
             var builder = new EventPipelineBuilder(eventName);
-            eventPipelineBuilders.Add(builder);
+            _eventPipelineBuilders.Add(builder);
 
             return builder;
         }
 
         internal EventRoutingBuilder AddHandler(GameEventHandler eventHandler)
         {
-            this.globalHandlers.Add(eventHandler);
+            _globalHandlers.Add(eventHandler);
 
             return this;
         }
 
         internal EventPipelineBuilder UnhandledEvent()
         {
-            unhandledEventBuilder = new EventPipelineBuilder(null);
+            _unhandledEventBuilder = new EventPipelineBuilder(null);
 
-            return unhandledEventBuilder;
+            return _unhandledEventBuilder;
         }
 
         internal GameEventRouter Build()
         {
-            var unhandledEventPipeline = unhandledEventBuilder.Build(globalHandlers);
-            var eventPipelines = eventPipelineBuilders.Select(p => p.Build(globalHandlers)).ToDictionary(p => p.MessageType);
+            var unhandledEventPipeline = _unhandledEventBuilder.Build(_globalHandlers);
+            var eventPipelines = _eventPipelineBuilders.Select(p => p.Build(_globalHandlers)).ToDictionary(p => p.MessageType);
 
             return new GameEventRouter(eventPipelines, unhandledEventPipeline);
         }
@@ -47,43 +50,43 @@ namespace Nether.Analytics.EventProcessor.Host
 
     internal class GameEventRouter
     {
-        private Dictionary<string, EventPipeline> eventPipelines;
-        private EventPipeline unhandledEventPipeline;
+        private Dictionary<string, EventPipeline> _eventPipelines;
+        private EventPipeline _unhandledEventPipeline;
 
         public GameEventRouter(Dictionary<string, EventPipeline> eventPipelines, EventPipeline unhandledEventPipeline)
         {
-            this.eventPipelines = eventPipelines;
-            this.unhandledEventPipeline = unhandledEventPipeline;
+            _eventPipelines = eventPipelines;
+            _unhandledEventPipeline = unhandledEventPipeline;
         }
 
         public void RouteMessage(GameMessage msg)
         {
-            if (eventPipelines.TryGetValue(msg.MessageType, out var pipeline))
+            if (_eventPipelines.TryGetValue(msg.MessageType, out var pipeline))
             {
                 pipeline.ProcessMessage(msg);
             }
             else
             {
-                unhandledEventPipeline?.ProcessMessage(msg);
+                _unhandledEventPipeline?.ProcessMessage(msg);
             }
         }
     }
 
     internal class EventPipeline
     {
-        private GameEventHandler[] gameEventHandlers;
-        private OutputManager[] outputManagers;
+        private GameEventHandler[] _gameEventHandlers;
+        private OutputManager[] _outputManagers;
 
         public EventPipeline(string messageType, GameEventHandler[] gameEventHandlers, OutputManager[] outputManagers)
         {
             MessageType = messageType;
-            this.gameEventHandlers = gameEventHandlers;
-            this.outputManagers = outputManagers;
+            _gameEventHandlers = gameEventHandlers;
+            _outputManagers = outputManagers;
         }
 
         internal void ProcessMessage(GameMessage msg)
         {
-            foreach (var handler in gameEventHandlers)
+            foreach (var handler in _gameEventHandlers)
             {
                 var result = handler.ProcessMessage(msg);
                 if (result.StopProcessing)
@@ -91,7 +94,7 @@ namespace Nether.Analytics.EventProcessor.Host
                     return;
                 }
             }
-            foreach (var outputManager in outputManagers)
+            foreach (var outputManager in _outputManagers)
             {
                 outputManager.OutputMessage(msg);
             }
@@ -107,30 +110,30 @@ namespace Nether.Analytics.EventProcessor.Host
 
     internal class EventPipelineBuilder
     {
-        private string eventName;
-        private List<GameEventHandler> handlers = new List<GameEventHandler>();
-        private OutputManager[] outputManagers;
+        private string _eventName;
+        private List<GameEventHandler> _handlers = new List<GameEventHandler>();
+        private OutputManager[] _outputManagers;
 
         public EventPipelineBuilder(string eventName)
         {
-            this.eventName = eventName;
+            _eventName = eventName;
         }
 
         internal EventPipelineBuilder AddHandler(GameEventHandler eventHandler)
         {
-            this.handlers.Add(eventHandler);
+            _handlers.Add(eventHandler);
 
             return this;
         }
 
         internal EventPipeline Build(List<GameEventHandler> globalHandlers)
         {
-            return new EventPipeline(eventName, globalHandlers.Concat(handlers).ToArray(), outputManagers);
+            return new EventPipeline(_eventName, globalHandlers.Concat(_handlers).ToArray(), _outputManagers);
         }
 
         internal void OutputTo(params OutputManager[] outputManagers)
         {
-            this.outputManagers = outputManagers;
+            _outputManagers = outputManagers;
         }
     }
 
@@ -174,11 +177,8 @@ namespace Nether.Analytics.EventProcessor.Host
         public abstract GameHandlerResult ProcessMessage(GameMessage message);
     }
 
-    class GameHandlerResult
+    internal class GameHandlerResult
     {
         public bool StopProcessing { get; set; }
     }
-
-
-
 }

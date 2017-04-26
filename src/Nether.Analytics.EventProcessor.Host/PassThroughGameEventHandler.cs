@@ -1,12 +1,15 @@
-﻿namespace Nether.Analytics.EventProcessor.Host
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Nether.Analytics.EventProcessor.Host
 {
     internal class PassThroughGameEventHandler
     {
-        private object[] outputManagers;
+        private object[] _outputManagers;
 
         public PassThroughGameEventHandler(params object[] outputManagers)
         {
-            this.outputManagers = outputManagers;
+            _outputManagers = outputManagers;
         }
     }
 }

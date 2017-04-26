@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.EventHubs;
@@ -11,7 +14,7 @@ namespace Nether.Analytics.EventHubs
     public class EventHubsListener : IEventProcessor, IMessageListener<EventHubListenerMessage>
     {
         private readonly EventProcessorHost _host;
-        Func<IEnumerable<EventHubListenerMessage>, Task> _messageHandler;
+        private Func<IEnumerable<EventHubListenerMessage>, Task> _messageHandler;
 
         public EventHubsListener(EventHubsListenerConfiguration config)
         {
@@ -105,7 +108,7 @@ namespace Nether.Analytics.EventHubs
         /// </summary>
         private class EventHubProcessorFactory : IEventProcessorFactory
         {
-            IEventProcessor _processor;
+            private IEventProcessor _processor;
 
             public EventHubProcessorFactory(IEventProcessor processor)
             {
