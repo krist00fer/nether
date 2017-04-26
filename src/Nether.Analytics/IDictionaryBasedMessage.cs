@@ -2,7 +2,7 @@
 
 namespace Nether.Analytics
 {
-    public interface IProperties
+    public interface IDictionaryBasedMessage
     {
         Dictionary<string, string> Properties { get; }
     }

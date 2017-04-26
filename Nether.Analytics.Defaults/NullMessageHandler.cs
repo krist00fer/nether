@@ -5,18 +5,20 @@ using System;
 
 namespace Nether.Analytics
 {
-    public class PassThroughMessageHandler : IMessageHandler
+    public class NullMessageHandler<T> : IMessageHandler<T> where T : IParsedMessage
     {
         private object[] _outputManagers;
 
-        public PassThroughMessageHandler(params object[] outputManagers)
+        public NullMessageHandler(params object[] outputManagers)
         {
             _outputManagers = outputManagers;
         }
 
-        public MessageHandlerResluts ProcessMessage(EventHubListenerMessage message)
+        public MessageHandlerResluts ProcessMessage(T message)
         {
-            throw new NotImplementedException();
+            // Don't do anything since this is a NullMessageHandler
+
+            return MessageHandlerResluts.Success;
         }
     }
 }

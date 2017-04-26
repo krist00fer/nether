@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Nether.Analytics
 {
-    public class MessagePipelineBuilder<ParsedMessageType> where ParsedMessageType : IMessageType
+    public class MessagePipelineBuilder<ParsedMessageType> where ParsedMessageType : IParsedMessage
     {
         private string _eventName;
         private List<IMessageHandler<ParsedMessageType>> _handlers = new List<IMessageHandler<ParsedMessageType>>();

@@ -5,9 +5,9 @@ using System;
 
 namespace Nether.Analytics.Bing
 {
-    public class BingLocationLookupHandler : IMessageHandler<SimpleMessage>
+    public class BingLocationLookupHandler : IMessageHandler<DictionaryBasedMessage>
     {
-        public MessageHandlerResluts ProcessMessage(SimpleMessage message)
+        public MessageHandlerResluts ProcessMessage(DictionaryBasedMessage message)
         {
             throw new NotImplementedException();
         }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Nether.Analytics
 {
-    public class MessageRouter<ParsedMessageType> : IMessageRouter<ParsedMessageType> where ParsedMessageType : IMessageType
+    public class MessageRouter<ParsedMessageType> : IMessageRouter<ParsedMessageType> where ParsedMessageType : IParsedMessage
     {
         private Dictionary<string, MessagePipeline<ParsedMessageType>> _eventPipelines;
         private MessagePipeline<ParsedMessageType> _unhandledEventPipeline;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.EventHubs.Processor;
-using Nether.Analytics.Listeners;
 
 // KEEP
 
@@ -12,7 +11,7 @@ namespace Nether.Analytics.EventHubs
     public class EventHubsListener : IEventProcessor, IMessageListener<EventHubListenerMessage>
     {
         private readonly EventProcessorHost _host;
-        Action<IEnumerable<EventHubListenerMessage>> _messageHandler;
+        Func<IEnumerable<EventHubListenerMessage>, Task> _messageHandler;
 
         public EventHubsListener(EventHubsListenerConfiguration config)
         {
@@ -30,7 +29,7 @@ namespace Nether.Analytics.EventHubs
                 throw new ArgumentException("LeaseContainerName needs to be provided");
 
             // If ConsumerGroupName is left null or empty, then use default ConsumerGroupName
-            var consumerGroupName = string.IsNullOrWhiteSpace(config.ConsumerGroupName) ? 
+            var consumerGroupName = string.IsNullOrWhiteSpace(config.ConsumerGroupName) ?
                 PartitionReceiver.DefaultConsumerGroupName : config.ConsumerGroupName;
             #endregion
 
@@ -42,7 +41,7 @@ namespace Nether.Analytics.EventHubs
                 config.LeaseContainerName);
         }
 
-        public async Task StartAsync(Action<IEnumerable<EventHubListenerMessage>> messageHandler)
+        public async Task StartAsync(Func<IEnumerable<EventHubListenerMessage>, Task> messageHandler)
         {
             _messageHandler = messageHandler;
             // Register this object as the processor of incomming EventHubMessages by using
@@ -71,14 +70,17 @@ namespace Nether.Analytics.EventHubs
                 });
             }
 
-            _messageHandler(gameMessages);
+            await _messageHandler(gameMessages);
 
             await context.CheckpointAsync();
         }
 
         public Task ProcessErrorAsync(PartitionContext context, Exception error)
         {
-            throw new NotImplementedException();
+            //TODO: Fix this
+            Console.WriteLine(error.ToString());
+            //throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
 
@@ -116,11 +118,4 @@ namespace Nether.Analytics.EventHubs
             }
         }
     }
-
-
-    
-
-
-
-
 }

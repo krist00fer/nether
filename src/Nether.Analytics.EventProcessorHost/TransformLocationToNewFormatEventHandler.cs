@@ -6,9 +6,9 @@ using System;
 
 namespace Nether.Analytics
 {
-    public class TransformLocationToNewFormatEventHandler : IMessageHandler<SimpleMessage>
+    public class TransformLocationToNewFormatEventHandler : IMessageHandler<DictionaryBasedMessage>
     {
-        public MessageHandlerResluts ProcessMessage(SimpleMessage message)
+        public MessageHandlerResluts ProcessMessage(DictionaryBasedMessage message)
         {
             throw new NotImplementedException();
         }

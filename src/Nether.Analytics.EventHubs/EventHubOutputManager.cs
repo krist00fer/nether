@@ -5,10 +5,11 @@
 
 using System;
 using Nether.Analytics.Parsers;
+using System.Threading.Tasks;
 
 namespace Nether.Analytics
 {
-    public class EventHubOutputManager : IOutputManager<SimpleMessage>
+    public class EventHubOutputManager : IOutputManager<DictionaryBasedMessage>
     {
         private string _outputEventHubConnectionString;
 
@@ -17,7 +18,7 @@ namespace Nether.Analytics
             _outputEventHubConnectionString = outputEventHubConnectionString;
         }
 
-        public void OutputMessage(SimpleMessage msg)
+        public Task OutputMessageAsync(DictionaryBasedMessage msg)
         {
             throw new NotImplementedException();
         }

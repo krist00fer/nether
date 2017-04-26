@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Nether.Analytics
 {
-    public class MessageRouterBuilder<ParsedMessageType> where ParsedMessageType : IMessageType
+    public class MessageRouterBuilder<ParsedMessageType> where ParsedMessageType : IParsedMessage
     {
         private List<IMessageHandler<ParsedMessageType>> _messageHandlers = new List<IMessageHandler<ParsedMessageType>>();
         private List<MessagePipelineBuilder<ParsedMessageType>> _eventPipelineBuilders = new List<MessagePipelineBuilder<ParsedMessageType>>();

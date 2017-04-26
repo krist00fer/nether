@@ -5,6 +5,8 @@ using Nether.Analytics.Bing;
 using Nether.Analytics.EventHubs;
 using Nether.Analytics.Parsers;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Nether.Analytics.EventProcessorHost
 {
@@ -12,6 +14,8 @@ namespace Nether.Analytics.EventProcessorHost
     {
         private static void Main(string[] args)
         {
+            Greet();
+
             var ingestEventHubConnectionString = "...";
             var outputblobStorageConnectionString = "...";
             var outputEventHubConnectionString = "...";
@@ -35,34 +39,39 @@ namespace Nether.Analytics.EventProcessorHost
             // Setup Output Managers
             var blobOutputManager = new BlobOutputManager(outputblobStorageConnectionString);
             var eventHubOutputManager = new EventHubOutputManager(outputEventHubConnectionString);
+            //var consoleOutputManager = new ConsoleOutputManager<DictionaryBasedMessage>(new DictionaryBasedMessageJsonSerializer());
+            var consoleOutputManager = new ConsoleOutputManager<DictionaryBasedMessage>(new DictionaryBasedMessageCsvSerializer());
 
             // Build up the Router Pipeline
-            var builder = new MessageRouterBuilder<SimpleMessage>();
+            var builder = new MessageRouterBuilder<DictionaryBasedMessage>();
 
             builder.AddMessageHandler(new GamerInfoEnricher());
             builder.UnhandledEvent().OutputTo(eventHubOutputManager);
 
-            builder.Event("location|1.0")
-                .AddHandler(new TransformLocationToNewFormatEventHandler())
-                .AddHandler(new BingLocationLookupHandler())
-                .OutputTo(eventHubOutputManager, blobOutputManager);
+            builder.Event("location|1.0.0")
+                .AddHandler(new NullMessageHandler<DictionaryBasedMessage>())
+                .OutputTo(consoleOutputManager);
 
             var router = builder.Build();
 
-            var gameEventProcessor = new MessageProcessor<EventHubListenerMessage, SimpleMessage>(listener, parser, router);
+            var messageProcessor = new MessageProcessor<EventHubListenerMessage, DictionaryBasedMessage>(listener, parser, router);
 
+            // Run in an async context since main method is not allowed to be marked as async
+            Task.Run(async () =>
+            {
+                await messageProcessor.ProcessAndBlockAsync();
 
-            gameEventProcessor.ProcessAndBlock();
+            }).GetAwaiter().GetResult();
         }
 
         private static void Greet()
         {
             Console.WriteLine();
-            Console.WriteLine(@" _   _      _   _               ");
-            Console.WriteLine(@"| \ | | ___| |_| |__   ___ _ __ ");
-            Console.WriteLine(@"|  \| |/ _ \ __| '_ \ / _ \ '__|");
-            Console.WriteLine(@"| |\  |  __/ |_| | | |  __/ |   ");
-            Console.WriteLine(@"|_| \_|\___|\__|_| |_|\___|_|   ");
+            Console.WriteLine(@"   _   _      _   _               ");
+            Console.WriteLine(@"  | \ | | ___| |_| |__   ___ _ __ ");
+            Console.WriteLine(@"  |  \| |/ _ \ __| '_ \ / _ \ '__|");
+            Console.WriteLine(@"  | |\  |  __/ |_| | | |  __/ |   ");
+            Console.WriteLine(@"  |_| \_|\___|\__|_| |_|\___|_|   ");
             Console.WriteLine(@"- Analytics Event Processor Host -");
             Console.WriteLine();
         }
