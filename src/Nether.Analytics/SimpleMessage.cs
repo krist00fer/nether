@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Nether.Analytics.Parsers
+namespace Nether.Analytics
 {
-    public class GenericMessage : IKnownMessageType
+    public class SimpleMessage : IMessageType
     {
         private Dictionary<string, string> _properties;
 
         public string MessageType { get; set; }
         public Dictionary<string, string> Properties => _properties;
 
-        public GenericMessage()
+        public SimpleMessage()
         {
             _properties = new Dictionary<string, string>();
         }

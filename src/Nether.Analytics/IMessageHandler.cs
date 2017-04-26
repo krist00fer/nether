@@ -5,8 +5,8 @@
 
 namespace Nether.Analytics
 {
-    public interface IMessageHandler<ParsedMessageType> where ParsedMessageType : IKnownMessageType
+    public interface IMessageHandler<ParsedMessageType> where ParsedMessageType : IMessageType
     {
-        GameHandlerResult ProcessMessage(ParsedMessageType message);
+        MessageHandlerResluts ProcessMessage(ParsedMessageType message);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Nether.Analytics.Listeners
+﻿namespace Nether.Analytics.EventHubs
 {
     public class EventHubsListenerConfiguration
     {

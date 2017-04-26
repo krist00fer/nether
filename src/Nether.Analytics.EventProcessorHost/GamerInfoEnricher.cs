@@ -8,13 +8,13 @@ using System;
 
 namespace Nether.Analytics.EventProcessorHost
 {
-    public class GamerInfoEnricher : IMessageHandler<GenericMessage>
+    public class GamerInfoEnricher : IMessageHandler<SimpleMessage>
     {
-        public GameHandlerResult ProcessMessage(GenericMessage message)
+        public MessageHandlerResluts ProcessMessage(SimpleMessage message)
         {
             message.Properties.Add("Greeting", "Event was enriched");
 
-            return new GameHandlerResult { StopProcessing = false; }
+            return new MessageHandlerResluts { StopProcessing = false };
         }
     }
 }

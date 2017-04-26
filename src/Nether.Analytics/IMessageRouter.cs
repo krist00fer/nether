@@ -1,7 +1,7 @@
 ﻿namespace Nether.Analytics
 {
-    public interface IMessageRouter<MessageType>
+    public interface IMessageRouter<ParsedMessageType> where ParsedMessageType : IMessageType
     {
-        void RouteMessage(MessageType message);
+        void RouteMessage(ParsedMessageType message);
     }
 }

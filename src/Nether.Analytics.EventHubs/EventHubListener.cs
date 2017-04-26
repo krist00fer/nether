@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.EventHubs.Processor;
+using Nether.Analytics.Listeners;
 
 // KEEP
 
-namespace Nether.Analytics.Listeners
+namespace Nether.Analytics.EventHubs
 {
     public class EventHubsListener : IEventProcessor, IMessageListener<EventHubListenerMessage>
     {

@@ -2,21 +2,22 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 // KEEP
+
 using System;
 using Nether.Analytics.Parsers;
 
 namespace Nether.Analytics
 {
-    public class BlobOutputManager : IOutputManager<GenericMessage>
+    public class EventHubOutputManager : IOutputManager<SimpleMessage>
     {
-        private string _outputblobStorageConnectionString;
+        private string _outputEventHubConnectionString;
 
-        public BlobOutputManager(string outputblobStorageConnectionString)
+        public EventHubOutputManager(string outputEventHubConnectionString)
         {
-            _outputblobStorageConnectionString = outputblobStorageConnectionString;
+            _outputEventHubConnectionString = outputEventHubConnectionString;
         }
 
-        public void OutputMessage(GenericMessage msg)
+        public void OutputMessage(SimpleMessage msg)
         {
             throw new NotImplementedException();
         }

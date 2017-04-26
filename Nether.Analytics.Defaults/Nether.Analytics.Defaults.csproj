@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\src\Nether.Analytics.EventHubs\Nether.Analytics.EventHubs.csproj" />
     <ProjectReference Include="..\src\Nether.Analytics\Nether.Analytics.csproj" />
   </ItemGroup>
 

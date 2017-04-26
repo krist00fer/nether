@@ -1,6 +1,6 @@
 ﻿namespace Nether.Analytics
 {
-    public interface IKnownMessageType
+    public interface IMessageType
     {
         string MessageType { get; }
     }

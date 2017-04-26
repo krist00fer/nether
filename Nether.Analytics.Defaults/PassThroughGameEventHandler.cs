@@ -14,7 +14,7 @@ namespace Nether.Analytics
             _outputManagers = outputManagers;
         }
 
-        public GameHandlerResult ProcessMessage(EventHubListenerMessage message)
+        public MessageHandlerResluts ProcessMessage(EventHubListenerMessage message)
         {
             throw new NotImplementedException();
         }

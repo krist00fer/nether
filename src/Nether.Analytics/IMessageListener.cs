@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Nether.Analytics.Listeners
+namespace Nether.Analytics
 {
     public interface IMessageListener<MessageType>
     {

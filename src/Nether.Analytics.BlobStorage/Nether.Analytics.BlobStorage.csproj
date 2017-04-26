@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Nether.Analytics\Nether.Analytics.csproj" />
+  </ItemGroup>
+
 </Project>

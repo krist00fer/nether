@@ -6,9 +6,9 @@ using System;
 
 namespace Nether.Analytics
 {
-    public class TransformLocationToNewFormatEventHandler : IMessageHandler<GenericMessage>
+    public class TransformLocationToNewFormatEventHandler : IMessageHandler<SimpleMessage>
     {
-        public GameHandlerResult ProcessMessage(GenericMessage message)
+        public MessageHandlerResluts ProcessMessage(SimpleMessage message)
         {
             throw new NotImplementedException();
         }

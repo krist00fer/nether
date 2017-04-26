@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Nether.Analytics.Bing;
-using Nether.Analytics.Listeners;
+using Nether.Analytics.EventHubs;
 using Nether.Analytics.Parsers;
 using System;
 
@@ -37,7 +37,7 @@ namespace Nether.Analytics.EventProcessorHost
             var eventHubOutputManager = new EventHubOutputManager(outputEventHubConnectionString);
 
             // Build up the Router Pipeline
-            var builder = new MessageRouterBuilder<GenericMessage>();
+            var builder = new MessageRouterBuilder<SimpleMessage>();
 
             builder.AddMessageHandler(new GamerInfoEnricher());
             builder.UnhandledEvent().OutputTo(eventHubOutputManager);
@@ -49,7 +49,7 @@ namespace Nether.Analytics.EventProcessorHost
 
             var router = builder.Build();
 
-            var gameEventProcessor = new GameEventProcessor<EventHubListenerMessage, GenericMessage>(listener, parser, router);
+            var gameEventProcessor = new MessageProcessor<EventHubListenerMessage, SimpleMessage>(listener, parser, router);
 
 
             gameEventProcessor.ProcessAndBlock();
