@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+// KEEP
 
 namespace Nether.Analytics
 {
-    public abstract class GameEventHandler
+    public interface IMessageHandler<ParsedMessageType> where ParsedMessageType : IKnownMessageType
     {
-        public abstract GameHandlerResult ProcessMessage(GameMessage message);
+        GameHandlerResult ProcessMessage(ParsedMessageType message);
     }
 }

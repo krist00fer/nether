@@ -4,19 +4,23 @@
 
 namespace Nether.Analytics
 {
-    public class GameEventPipeline
+    public class GameEventPipeline<ParsedMessageType> where ParsedMessageType : IKnownMessageType
     {
-        private GameEventHandler[] _gameEventHandlers;
-        private OutputManager[] _outputManagers;
+        private IMessageHandler<ParsedMessageType>[] _gameEventHandlers;
+        private IOutputManager<ParsedMessageType>[] _outputManagers;
 
-        public GameEventPipeline(string messageType, GameEventHandler[] gameEventHandlers, OutputManager[] outputManagers)
+        public string MessageType { get; private set; }
+
+        public GameEventPipeline(string messageType, 
+            IMessageHandler<ParsedMessageType>[] gameEventHandlers, 
+            IOutputManager<ParsedMessageType>[] outputManagers)
         {
             MessageType = messageType;
             _gameEventHandlers = gameEventHandlers;
             _outputManagers = outputManagers;
         }
 
-        public void ProcessMessage(GameMessage msg)
+        public void ProcessMessage(ParsedMessageType msg)
         {
             foreach (var handler in _gameEventHandlers)
             {
@@ -26,12 +30,12 @@ namespace Nether.Analytics
                     return;
                 }
             }
+
             foreach (var outputManager in _outputManagers)
             {
                 outputManager.OutputMessage(msg);
             }
         }
 
-        public string MessageType { get; private set; }
     }
 }

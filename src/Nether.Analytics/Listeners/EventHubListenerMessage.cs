@@ -2,10 +2,15 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 
+using System;
+
 namespace Nether.Analytics
 {
-    public class GameMessage
+    public class EventHubListenerMessage
     {
         public string MessageType { get; set; }
+        public ArraySegment<byte> Body { get; internal set; }
+        public DateTime EnqueuedTime { get; internal set; }
+        public DateTime DequeuedTime { get; internal set; }
     }
 }

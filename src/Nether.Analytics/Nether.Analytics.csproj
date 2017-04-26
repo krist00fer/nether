@@ -9,8 +9,4 @@
     <PackageReference Include="Microsoft.Azure.EventHubs.Processor" Version="1.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Inputs\EventHubs\" />
-  </ItemGroup>
-
 </Project>

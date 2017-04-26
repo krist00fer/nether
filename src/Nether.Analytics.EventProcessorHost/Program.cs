@@ -4,6 +4,8 @@
 using Nether.Analytics.Bing;
 using Nether.Analytics.Defaults;
 using Nether.Analytics.Inputs.EventHubs;
+using Nether.Analytics.Listeners;
+using Nether.Analytics.Parsers;
 using System;
 
 namespace Nether.Analytics.EventProcessorHost
@@ -17,12 +19,29 @@ namespace Nether.Analytics.EventProcessorHost
             var outputEventHubConnectionString = "...";
             var unknownGameEventsEventHubConnectionString = "...";
 
+            // Setup Listener
+            var listenerConfig = new EventHubsListenerConfiguration
+            {
+                EventHubConnectionString = "Endpoint=sb://nether.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=h16jv6nc0bVfgdWrZp7f5Fpau4jaSu2YH+U2xg0YI14=",
+                EventHubPath = "ingest",
+                ConsumerGroupName = "nether",
+                StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=netherdashboard;AccountKey=oT30a8/BSwTFg/4GGWLPCeGIHBfgDcMf9zEThKHlY4hjUNy3sYUTSWXWa3yJMoX2lvTnWSIrjtwU9kg9YaL0Qw==;EndpointSuffix=core.windows.net",
+                LeaseContainerName = "eventhublease"
+            };
+
+            var listener = new EventHubsListener(listenerConfig);
+
+            // Setup Message Parser
+            var parser = new JsonEventHubMessageParser();
+
+            // Setup Output Managers
             var blobOutputManager = new BlobOutputManager(outputblobStorageConnectionString);
             var eventHubOutputManager = new EventHubOutputManager(outputEventHubConnectionString);
 
-            var builder = new GameEventRouterBuilder();
+            // Build up the Router Pipeline
+            var builder = new MessageRouterBuilder<GenericMessage>();
 
-            builder.AddHandler(new GamerInfoEnricher());
+            builder.AddMessageHandler(new GamerInfoEnricher());
             builder.UnhandledEvent().OutputTo(eventHubOutputManager);
 
             builder.Event("location|1.0")
@@ -30,21 +49,9 @@ namespace Nether.Analytics.EventProcessorHost
                 .AddHandler(new BingLocationLookupHandler())
                 .OutputTo(eventHubOutputManager, blobOutputManager);
 
-            GameEventRouter r = builder.Build();
+            var router = builder.Build();
 
-            var listener = new EventHubProcessor
-            {
-                Parser = new NetherGameEventParser(),
-                Router = builder.Build()
-            };
-
-            var gameEventProcessor = new GameEventProcessor
-            {
-                Listener = new EventHubListener(ingestEventHubConnectionString),
-                Parser = new NetherGameEventParser(),
-                Pipeline = builder.Build()
-            };
-
+            var gameEventProcessor = new GameEventProcessor<EventHubListenerMessage, GenericMessage>(listener, parser, router);
 
 
             gameEventProcessor.ProcessAndBlock();

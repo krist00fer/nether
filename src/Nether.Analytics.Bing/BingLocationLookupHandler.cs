@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Nether.Analytics.Parsers;
+using System;
+
+// KEEP
 
 namespace Nether.Analytics.Bing
 {
-    public class BingLocationLookupHandler : GameEventHandler
+    public class BingLocationLookupHandler : IMessageHandler<GenericMessage>
     {
-        public override GameHandlerResult ProcessMessage(GameMessage message)
+        public GameHandlerResult ProcessMessage(GenericMessage message)
         {
             throw new NotImplementedException();
         }
