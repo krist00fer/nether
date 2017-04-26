@@ -9,7 +9,7 @@ param(
 # See https://github.com/MicrosoftDX/nether/issues/451 for details
 $codeFormatterDownloadUri = "https://netherartifacts.blob.core.windows.net/code-formatter/code-formatter.zip"
 $codeFormatterDownloadLocation = "$env:TEMP\code-formatter.zip"
-$codeFormatterExtractLocation = "c:\tmp"
+$codeFormatterExtractLocation = "$env:TEMP\code-formatter\"
 
 # Check that there are no outstanding changes as we will use git status to test if CodeFormatter applied any changes
 Write-Host "Checking for changes..."
