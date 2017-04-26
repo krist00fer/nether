@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Nether.Analytics.Bing;
-using Nether.Analytics.Defaults;
-using Nether.Analytics.Inputs.EventHubs;
 using Nether.Analytics.Listeners;
 using Nether.Analytics.Parsers;
 using System;
