@@ -6,6 +6,31 @@ using System;
 
 namespace Nether.Analytics
 {
+    public class EventHubProcessor : ProcessorBase
+    {
+
+    }
+
+    public class ConsoleProcessor : ProcessorBase
+    {
+
+    }
+
+    public abstract class ProcessorBase
+    {
+        public object MessageParser { get; set; }
+        public object MessageRouter { get; set; }
+
+        public ProcessorBase(object messageParser, object messageRouter)
+        {
+            MessageParser = messageParser;
+            MessageRouter = messageRouter;
+        }
+
+        public void ProcessMessage(object message)
+        { }
+    }
+
     public class GameEventProcessor
     {
         public GameEventProcessor(EventHubListener listner, GameEventParserBase parser, GameEventRouter router)
