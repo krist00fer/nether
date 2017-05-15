@@ -117,6 +117,9 @@ namespace Nether.Analytics.Host
 
             // The following method will never exit
             await messageProcessor.ProcessAndBlockAsync();
+
+            var pipeline = new Pipeline();
+            var pipelineScheduler = new PipelineScheduler(pipeline, PipelineSchedulerOptions.HourlyOnTheHour);
         }
 
         private void SetupConfigurationProviders()
