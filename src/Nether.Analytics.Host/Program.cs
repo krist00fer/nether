@@ -20,11 +20,12 @@ namespace Nether.Analytics.Host
             Console.WriteLine();
 
             var app = new ProgramEx();
+            app.RunAsync().Wait();
 
-            Task.Run(async () =>
-            {
-                await app.RunAsync();
-            }).GetAwaiter().GetResult();
+            //Task.Run(async () =>
+            //{
+            //    await app.RunAsync();
+            //}).GetAwaiter().GetResult();
         }
     }
 }

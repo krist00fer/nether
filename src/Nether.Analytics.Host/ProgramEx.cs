@@ -65,6 +65,19 @@ namespace Nether.Analytics.Host
                 return;
             }
 
+
+            var pipeline = new Pipeline(
+                new UtcNowPipelineAction(),
+                new DebugPipelineAction(),
+                new ConsoleOutPipelineAction());
+
+            await pipeline.ProcessAsync();
+
+            Console.ReadLine();
+            //var pipelineScheduler = new PipelineScheduler(pipeline, PipelineSchedulerOptions.HourlyOnTheHour, null);
+
+            return;
+
             // Authenticate against Azure AD once and re-use for all needed purposes
             var serviceClientCretentials = await ApplicationTokenProvider.LoginSilentAsync(_configuration[NAH_AAD_Domain],
                 new ClientCredential(_configuration[NAH_AAD_ClientId], _configuration[NAH_AAD_ClientSecret]));
@@ -117,9 +130,6 @@ namespace Nether.Analytics.Host
 
             // The following method will never exit
             await messageProcessor.ProcessAndBlockAsync();
-
-            var pipeline = new Pipeline();
-            var pipelineScheduler = new PipelineScheduler(pipeline, PipelineSchedulerOptions.HourlyOnTheHour);
         }
 
         private void SetupConfigurationProviders()

@@ -54,7 +54,8 @@ namespace Nether.Analytics
             {
                 var result = await action.ProcessAsync(pipelineState);
             }
-            throw new NotImplementedException();
+
+            return true;
         }
     }
 
