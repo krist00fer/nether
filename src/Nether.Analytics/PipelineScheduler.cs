@@ -11,13 +11,15 @@ namespace Nether.Analytics
         private Pipeline _pipeline;
         private ISchedulerSynchronizer _synchronizer;
 
-        public PipelineScheduler(Pipeline pipeline, PipelineSchedulerOptions hourlyOnTheHour, ISchedulerSynchronizer synchronizer)
+        public PipelineScheduler(PipelineSchedulerOptions hourlyOnTheHour, ISchedulerSynchronizer synchronizer)
         {
             _pipeline = pipeline;
             _options = hourlyOnTheHour;
             _synchronizer = synchronizer;
         }
     }
+
+
 
     public enum PipelineSchedulerOptions
     {
@@ -135,7 +137,7 @@ namespace Nether.Analytics
             _properties = properties;
         }
         public SetPropertyPipelineAction(string property, string value)
-            : this(new Dictionary<string, string> { { property, value} })
+            : this(new Dictionary<string, string> { { property, value } })
         {
         }
 
