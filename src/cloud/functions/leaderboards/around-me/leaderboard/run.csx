@@ -21,7 +21,7 @@ private const int radiusOfLeaderboard = 5;
 private static bool runOnce = true;
 private static DocumentClient client;
 
-public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, string leaderboard, string playerId, TraceWriter log)
+public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, string playerId, TraceWriter log)
 {
     // Run initialization only once.
     // Remarks: This initialization will run once on every instance and on every recompile of this function
@@ -51,8 +51,8 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, string
         log.Info("Initialization done!");
     }
 
-    if (string.IsNullOrWhiteSpace(leaderboard) || string.IsNullOrWhiteSpace(playerId))
-        return req.CreateResponse(HttpStatusCode.BadRequest, "Both playerId and leaderboard should be provided in URL path, format is leaderboard/playerId");
+    if (string.IsNullOrWhiteSpace(playerId))
+        return req.CreateResponse(HttpStatusCode.BadRequest, "PlayerId should be provided");
 
     try
     {
@@ -63,15 +63,15 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, string
         // Get score for the current player by playerId        
         var queryGetPlayerById =
             (from s in scores
-             where s.PlayerId == playerId && s.Leaderboard == leaderboard
+             where s.DocumentType == "ScoreItem" && s.PlayerId == playerId
              select s);
 
         var player = queryGetPlayerById.ToList();
         if (player.Count < 1)
-            return req.CreateResponse(HttpStatusCode.BadRequest, $"Player with Id = {playerId} in Leaderboard = {leaderboard} does not exist in the database");
+            return req.CreateResponse(HttpStatusCode.BadRequest, $"Player with Id = {playerId} does not exist in the database");
 
         if (player.Count > 1)
-            return req.CreateResponse(HttpStatusCode.BadRequest, $"There are more than one player with Id = {playerId} in Leaderboard = {leaderboard}. This is DB confuguration error - this combination should be unique");
+            return req.CreateResponse(HttpStatusCode.BadRequest, $"There are more than one player with Id = {playerId}");
 
         var currentPlayer = player.First();
 
@@ -81,7 +81,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, string
         List<LeaderboardItem> sortedResult = new List<LeaderboardItem>(); //Sorted list from highest score (start of list) to lowest for output  
 
         var queryGetCountOfPlayersWithHigherScore = (from c in scores
-                                                     where c.Score > currentPlayer.Score && c.Leaderboard == leaderboard
+                                                     where c.DocumentType == "ScoreItem" && c.Score > currentPlayer.Score
                                                      select c).Count<ScoreItem>();
 
         globalRank = queryGetCountOfPlayersWithHigherScore + 1;
@@ -90,7 +90,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, string
         {
             // Get and add to output specific number of players (radiusOfLeaderboard constant) with scores above the current player)
             var queryGetPlayersWithHigherScores = (from s in scores
-                                                   where s.Score > currentPlayer.Score && s.Leaderboard == leaderboard
+                                                   where s.DocumentType == "ScoreItem" && s.Score > currentPlayer.Score
                                                    orderby s.Score ascending
                                                    select s).Take(radiusOfLeaderboard);
 
@@ -108,7 +108,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, string
 
         // Get and add to output specific number of players (radiusOfLeaderboard constant) with scores below the current player)
         var queryGetPlayersWithLowerScores = (from s in scores
-                                              where s.Score <= currentPlayer.Score && s.Leaderboard == leaderboard && s.PlayerId != currentPlayer.PlayerId
+                                              where s.DocumentType == "ScoreItem" && s.Score <= currentPlayer.Score && s.PlayerId != currentPlayer.PlayerId
                                               orderby s.Score descending
                                               select s).Take(radiusOfLeaderboard);
 
@@ -164,15 +164,19 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, string
 public class ScoreItem
 {
     [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
-    [JsonProperty(PropertyName = "leaderboard")]
-    public string Leaderboard { get; set; }
+    public string Id { get; set;}    
+    
+    [JsonProperty(PropertyName = "documentType")]
+    public string DocumentType { get; set; } = "ScoreItem";
+
     [JsonProperty(PropertyName = "player")]
-    public string Player { get; set; }
+    public string Player { get; set;}
+    
     [JsonProperty(PropertyName = "playerId")]
-    public string PlayerId { get; set; }
+    public string PlayerId { get; set;}
+    
     [JsonProperty(PropertyName = "score")]
-    public double Score { get; set; }
+    public double Score { get; set;}
 }
 
 public class LeaderboardItem

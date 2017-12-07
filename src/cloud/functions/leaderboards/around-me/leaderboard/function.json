@@ -5,10 +5,10 @@
       "name": "req",
       "type": "httpTrigger",
       "direction": "in",
-      "route": "{leaderboard}/{playerId}",
       "methods": [
         "get"
-      ]
+      ],
+      "route": "leaderboard/{playerId}"
     },
     {
       "name": "$return",

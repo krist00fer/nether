@@ -57,6 +57,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         
         var query = 
             (from s in leaderboard
+            where s.DocumentType == "ScoreItem"
             orderby s.Score descending
             select new LeaderboardItem {Player = s.Player, Score = s.Score}).Take(lengthOfLeaderboard);
 
@@ -67,7 +68,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         {
             // Update rank to i + 1 if score is not the same as the last player's score
             // i.e. two or more players with the same score should have the same rank
-            if (i > 0 || leaders[i-1].Score != leaders[i].Score)
+            if (i > 0 && leaders[i-1].Score != leaders[i].Score)
                 rank = i + 1;
 
             leaders[i].Rank = rank;
@@ -92,12 +93,16 @@ public class ScoreItem
 {
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set;}    
-    [JsonProperty(PropertyName = "leaderboard")]
-    public string Leaderboard { get; set;}    
+    
+    [JsonProperty(PropertyName = "documentType")]
+    public string DocumentType { get; set; } = "ScoreItem";
+
     [JsonProperty(PropertyName = "player")]
     public string Player { get; set;}
+    
     [JsonProperty(PropertyName = "playerId")]
     public string PlayerId { get; set;}
+    
     [JsonProperty(PropertyName = "score")]
     public double Score { get; set;}
 }

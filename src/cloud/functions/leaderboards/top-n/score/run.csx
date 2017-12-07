@@ -66,7 +66,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         var existingPlayer = new ScoreItem();
         var query  = 
             from s in scoreItems  
-            where s.PlayerId == postedScore.PlayerId         
+            where s.DocumentType == "ScoreItem" && s.PlayerId == postedScore.PlayerId         
             select s;
 
         var result = query.ToList<ScoreItem>();
@@ -103,10 +103,16 @@ public class ScoreItem
 {
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set;}    
+    
+    [JsonProperty(PropertyName = "documentType")]
+    public string DocumentType { get; set; } = "ScoreItem";
+
     [JsonProperty(PropertyName = "player")]
     public string Player { get; set;}
+    
     [JsonProperty(PropertyName = "playerId")]
     public string PlayerId { get; set;}
+    
     [JsonProperty(PropertyName = "score")]
     public double Score { get; set;}
 }
